@@ -1,6 +1,7 @@
 # Thoughts on Kubecon EU 2024
 
 `#kubeconeu2024` `#kubernetes` `#travel` `#ai`
+
 If you didn't know by now, I'm a huge fan of Kubernetes so understandably, when given the opportunity to meet other people who share my level of enthusiasm for it, I take it.
 
 KubeCon EU 2024 is my 4th KubeCon, but first KubeCon in Europe. Why Europe? Well, after the passing of Kris Nova I couldn't bring myself to to attend KubeCon NA 2023, and since many of the people I know in the Kubernetes community were going to Paris anyway, I figured why not break new ground and put a face to many of the people I know by twitter handle.
