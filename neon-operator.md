@@ -29,7 +29,7 @@ to
 RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/build/target cargo build
 ```
 
-is all you need^0.
+is all you need [^0].
 
 ## Manifests for the operator
 
@@ -37,7 +37,7 @@ Again, for those familiar with kubernetes, the [manifests](https://warehouse.tai
 
 ## Designing, building and iterating on the operator
 
-The idea of the operator^1 was basically that it would deploy all of the required infrastructure for your neon database(s) that would then allow you to deploy multiple databases like neon cloud does.
+The idea of the operator[^1] was basically that it would deploy all of the required infrastructure for your neon database(s) that would then allow you to deploy multiple databases like neon cloud does.
 
 Initially, my approach was based on this [rust-kubernetes-operator-example](https://github.com/Pscheidl/rust-kubernetes-operator-example/blob/master/src/main.rs) I found, to have a reconcile loop that decides what action to take then apply it, but after trying it I realized although this is maybe the "right" way to do things, it'd be too large of an undertaking.
 
@@ -88,7 +88,7 @@ async fn reconcile(context: MyThingSpec) -> Result<Action, _> {
 
 With the basic implementation out of the way, testing was pretty straight forward. Tilt automatically replaces image refs in objects it knows about, so redeploying the controller was literally save, wait 2 seconds, check the logs and kubernetes to see if it did the right thing, do it again until I had all the services up and running. There is a minor race condition though, the Custom Resource Definition needs to exist before tilt can replace image refs in it, but I have kube-rs generate and apply the CRD when the service starts. In this case I cheated again, and did a `kubectl get crd neondatabase -o yaml > neondatabase.yaml` and moved on, but for to scale this, I'd have to have the crd generated as part of a build script most likely.
 
-To run the tests neon runs for local development, I needed to build a custom image, so I [added their docker-compose assets](https://warehouse.tail7ff6c.ts.net/Melenion/neon-operator/src/branch/main/orig-compose) to this repo. Since I registered the compute_image image ref with Tilt, it is able to automatically build and apply this image for testing. I could then run the included `docker_compose_test.sh` and it ran successfully, success!^2
+To run the tests neon runs for local development, I needed to build a custom image, so I [added their docker-compose assets](https://warehouse.tail7ff6c.ts.net/Melenion/neon-operator/src/branch/main/orig-compose) to this repo. Since I registered the compute_image image ref with Tilt, it is able to automatically build and apply this image for testing. I could then run the included `docker_compose_test.sh` and it ran successfully, success![^2]
 
 ## Takeaways
 
@@ -131,12 +131,6 @@ but I couldn't figure out a nice way to do this without trying to implement pulu
 
 So that's it for now, I plan to iterate on this in my free time and address some of these issues, so expect edits to this document and possible a follow up post. Keep an eye on the repo for the tests, and hopefully this will be usable by other people in the not too distant future.
 
-[0]: You also need to mount the build directory again later if you want to copy files out of it for example, as well dockerfiles don't really have variables so you need to make sure these paths match your project
-
-[1]: I use operator and controller interchangeably after this point, though they're technically different things. A controller is a binary that runs the reconciliation loop for a resource, whereas operator is a pattern in the kubernetes community for automatically managing a certain type of thing - IE a "postgres operator" might automatically replace a failed instance, or have a way to configure backups for the postgres deployment. Both do essentially have the same reconciliation loop, just operators tend to deal with higher level features than pods and services.
-
-[2]: Although, I won't consider this project a success truly until I at least get the tests running in CI so that others (my future self included) can iterate from a known working point.
-
-```
-
-```
+[^0]: You also need to mount the build directory again later if you want to copy files out of it for example, as well dockerfiles don't really have variables so you need to make sure these paths match your project
+[^1]: I use operator and controller interchangeably after this point, though they're technically different things. A controller is a binary that runs the reconciliation loop for a resource, whereas operator is a pattern in the kubernetes community for automatically managing a certain type of thing - IE a "postgres operator" might automatically replace a failed instance, or have a way to configure backups for the postgres deployment. Both do essentially have the same reconciliation loop, just operators tend to deal with higher level features than pods and services.
+[^2]: Although, I won't consider this project a success truly until I at least get the tests running in CI so that others (my future self included) can iterate from a known working point.
