@@ -183,7 +183,10 @@ This was great, because later I learned I could replace these type aliases with 
 
 
 ```rust
-CompactArray<LengthType, InnerType>
+struct CompactArray<LengthType, InnerType> {
+  length: LengthType,
+  contents: Vec<InnerType>
+}
 
 type VarIntCompactArray<T> = CompactArray<VarInt, T>
 type FooArray = VarIntCompactArray<Foo>
