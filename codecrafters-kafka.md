@@ -152,10 +152,10 @@ I know magic byte should be 0x02, and producer_id in this case should be [ff,ff,
 
 Recall, (I think I mentioned) that kafka typically tells you the number of items before the type of item - it calls this concept a CompactArray. CompactArray (typically) takes a VarInt for the length, and of course <T>s back to back. When I first started writing the code I'd do
 
-```
+```rust
 #[derive(DekuRead, DekuWrite)]
 struct ThingContainer {
-  thing_array_length
+  thing_array_length: VarInt,
   #[deku(count=thing_array_length.saturating_sub(1))] // <- to counteract the -1 off by one thing from before
   things: Vec<Thing> // <- Vec is why Zerocopy went out the window
 }
@@ -163,7 +163,7 @@ struct ThingContainer {
 
 That can of course be made generic, `CompactArray<T> { length: VarInt, contents: Vec<T>}` - but the rust compiler doesn't like this. It says, you can't prove that every possible T can be De(Serialized) by Deku. OK fair enough, `Impl<T> for CompactArray<T: DekuWrite + DekuRead>, compiler says nope, Deku takes a reference to a buffer that has a lifetime 'a, you can't prove every 'a T lives long enough to be (De)serialized.
 
-Fair enough - fortunately we can use Higher-Ranked Trait Bounds, where higher ranked just means like - trait bounds for trait bounds, or more specifically, generic trait bounds. So we have to tell rust - "OK, For all <T>, we must have a lifetime  (calling this lifetime 'a) that can be used as the lifetime that lives long enough for deku's 'a (calling it 'b because it's a parameter - I know confusing) lifetime. Or in rust:
+Fair enough - fortunately we can use Higher-Ranked Trait Bounds, where higher ranked just means like - trait bounds for trait bounds, or more specifically, generic trait bounds. So we have to tell rust - "OK, For all <T>, we must have a lifetime  (calling this lifetime 'a) that can be used as the lifetime that lives long enough for Deku's 'a (calling it 'b because it's a parameter - I know confusing) lifetime. Or in rust:
 
 ```
 impl<'a, T> DekuReader<'a, Endian> for CompactArray<T>
