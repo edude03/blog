@@ -161,9 +161,9 @@ struct ThingContainer {
 }
 ```
 
-That can of course be made generic, `CompactArray<T> { length: VarInt, contents: Vec<T>}` - but the rust compiler doesn't like this. It says, you can't prove that every possible T can be De(Serialized) by Deku. OK fair enough, `Impl<T> for CompactArray<T: DekuWrite + DekuRead>, compiler says nope, Deku takes a reference to a buffer that has a lifetime 'a, you can't prove every 'a T lives long enough to be (De)serialized.
+That can of course be made generic, `CompactArray<T> { length: VarInt, contents: Vec<T>}` - but the rust compiler doesn't like this. It says, you can't prove that every possible `T` can be De(Serialized) by Deku. OK fair enough, `Impl<T> for CompactArray<T: DekuWrite + DekuRead>`, compiler says nope, Deku takes a reference to a buffer that has a lifetime `'a`, you can't prove every `'a T` lives long enough to be (De)serialized.
 
-Fair enough - fortunately we can use Higher-Ranked Trait Bounds, where higher ranked just means like - trait bounds for trait bounds, or more specifically, generic trait bounds. So we have to tell rust - "OK, For all <T>, we must have a lifetime  (calling this lifetime 'a) that can be used as the lifetime that lives long enough for Deku's 'a (calling it 'b because it's a parameter - I know confusing) lifetime. Or in rust:
+Fair enough - fortunately we can use Higher-Ranked Trait Bounds, where higher ranked just means like - trait bounds for trait bounds, or more specifically, generic trait bounds. So we have to tell rust - "OK, For all `<T>`, we must have a lifetime  (calling this lifetime 'a) that can be used as the lifetime that lives long enough for Deku's 'a (calling it 'b because it's a parameter - I know confusing) lifetime. Or in rust:
 
 ```
 impl<'a, T> DekuReader<'a, Endian> for CompactArray<T>
