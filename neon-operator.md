@@ -10,7 +10,7 @@ Getting tilt setup was super easy - with a quick `tilt init` and some light edit
 
 ## Starting with the rust code
 
-I've been using rust in production for the past 4ish years and I'm assuming the reader is also somewhat familiar with the rust ecosystem so I won't bore you - essentially I just needed to `cargo new neon-operator` and `cargo add kube-rs kube-api tokio clap thiserror tracing tracing-subscriber` (my typical litany of rust library for most projects) and I was off to the races.
+I've been using rust in production for the past 4ish years and I'm assuming the reader is also somewhat familiar with the rust ecosystem so I won't bore you - essentially I just needed to `cargo new neon-operator` and `cargo add kube-rs kube-api tokio clap thiserror tracing tracing-subscriber` (my typical litany of rust libraries for most projects) and I was off to the races.
 
 ## Setting up the build
 
@@ -108,7 +108,7 @@ I explained this above, but one thing I left out is in practice this reconciliat
 
 This is a style choice for sure, but I don't like functions that take a bunch of duplicate parameters. Ideally, I'd really like Scala style [Using Clauses](https://docs.scala-lang.org/scala3/reference/contextual/using-clauses.html) for things like `kube_client` and `owner_ref` but I'm also sure there is a pattern I could use (like passing a closure) that would clean this up.
 
-Futhermore, having a way to apply the functions in order and as dependencies pulumi style ie
+Furthermore, having a way to apply the functions in order and as dependencies pulumi style ie
 
 ```
 let minio = Minio::new(some, config).await?
