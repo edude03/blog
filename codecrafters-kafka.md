@@ -191,13 +191,13 @@ type FooArray = VarIntCompactArray<Foo>
 
 ## Macro expansion
 
-This feature used to be nightly only, now you can bring up the context macro on a random derive macro and see the code it generates. This was monumental to figuring out why deku didn't always do what I wanted (and gave me a template for what I needed to do to get it to do what I wanted)
+This feature used to be nightly only, now you can bring up the context macro on a random derive macro and see the code it generates. This was monumental to figuring out why Deku didn't always do what I wanted (and gave me a template for what I needed to do to get it to do what I wanted)
 
 ## Cleaning up
 
-My philosophy in rust is clone is part of the design, errors are not. If you use `.clone()` it's not clear later if it's a load bearing clone until you try and remove it and have to redesign and rewrite the surrounding code so I try to use them as sparingly as possible. `.unwrap()` `.expect()` `panic!()` however, I put that stuff on everything. After the code works as expected, I like to go back and find and replace the unhandled errors with `thiserror` and define errors for the things I know can go wrong.
+My philosophy in rust is clone is part of the design, errors are not. If you use `.clone()` it's not clear later if it's a load bearing clone until you try and remove it and have to redesign and rewrite the surrounding code so I try to use them as sparingly as possible. `.unwrap()` `.expect()` `panic!()` however, I put that ~~shit~~ on everything. After the code works as expected, I like to go back and find and replace the unhandled errors with `thiserror` and define errors for the things I know can go wrong. Using Enums for error (Algebraic Data Types to be specific) - makes this process kind of delightful - you swap `unwrap` for `?` and it'll immediately tell you if you've handled this error or not.
 
-In this project, I didn't end up going back for the `thiserror` pass (yet) because my other philosophy is errors are about routing information - in this case, being able to translate for example - a parse error to an application error, and that application error into an invalid request. In kafka land, I didn't implement enough of the API to really make use of that, Kafka errors tend to be not exactly errors in my opinion. For example should a get for a topic be `Result<Option<T>>` or `Result<T>`? I'd argue the former, I don't want to unwind the stack for something that's not exceptional, but the kafka protocol designers disagree
+In this project, I didn't end up going back for the `thiserror` pass (yet) because my other philosophy is errors are about routing information. For example you might want to translate a parse error to an application error, then translate that application error into an `invalid request` response. In kafka land, I didn't implement enough of the API to really make use of that, Kafka errors tend to be not exactly errors in my opinion. For example should `get(topic_name)` return `Result<Option<T>>` or `Result<T>`? I'd argue the former - the `Error` type should communicate whether the function had an error preventing it from completing and the `Option` type should communicate whether the requested topic exists. The kafka protocol designers seem to disagree with this however - it's an error to request a topic that doesn't exist.
 
 
 
