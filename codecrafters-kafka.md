@@ -128,8 +128,8 @@ Byte stream:
 +----+----+----+----+----+----+----+----+----+----+----+
 | 00 | 00 | 00 | 00 | 1A | 02 | 01 | ... header ...    |
 +----+----+----+----+----+----+----+----+----+----+----+
-|___________________||_______________________________|
-[   Message size    ][        Header           ]
+|___________________||_________________________________|
+[   Message size    ][               Header            ]
 ```
 
 So, there isn't even a stop byte to tell you to stop reading, which means, if your math is off or you skip parsing a field (or the field is too small etc) your data ends up decoded wrong and you get a hard to debug error.
