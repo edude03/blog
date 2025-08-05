@@ -146,7 +146,7 @@ producer_id: [ff, ff, ff, 02]
 magic_byte: [00]
 ```
 
-I know magic byte should be 0x02, and producer_id in this case should be [ff,ff,ff,ff] which means, somewhere we missed decoding 1 byte. Yep it was the "tag buffer" - not documented but usually comes at the end of all the records.
+I know magic byte should be `0x02`, and producer_id in this case should be `[ff,ff,ff,ff]` which means, somewhere we missed decoding 1 byte. Yep it was the "tag buffer" - not documented but usually comes at the end of all the records. Adding the tag buffer to the previous record moves all the bytes over by one and thus the data is aligned as expected
 
 ## Compact Arrays and how I learned to love HRTB
 
